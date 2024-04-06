@@ -1,0 +1,16 @@
+# DIOR dataset
+
+train: ./DIOR/train.txt  # 5862 images
+val: ./DIOR/val.txt  # 5863 images
+
+# number of classes
+nc: 20
+
+# class names
+names: ['airplane','airport','baseballfield','basketballcourt','bridge','chimney','dam','Expressway-Service-area','Expressway-toll-station',
+        'golffield','groundtrackfield','harbor','overpass','ship','stadium','storagetank','tenniscourt','trainstation','vehicle','windmill']
+
+anchors:
+  - [16,8, 10,17, 30,14]  # P3/8
+  - [16,32, 54,26, 32,62]  # P4/16
+  - [79,108, 159,155, 330,350]  # P5/32

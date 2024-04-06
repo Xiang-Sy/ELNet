@@ -1,0 +1,47 @@
+backbone:
+  [[-1, 1, WTA, [320, 8, 8, 64]],
+   
+   [-1, 1, Conv, [32, 3, 2, None, 1, nn.ReLU6()]],
+   
+   [-1, 1, BNeck, [16, 1, 1]],
+   [-1, 1, BNeck, [24, 2, 6]],
+   [-1, 1, BNeck, [24, 1, 6]],
+   [-1, 1, BNeck, [32, 2, 6]],
+   [-1, 1, BNeck, [32, 1, 6]],
+   [-1, 1, BNeck, [32, 1, 6]],                        # 7 - P3
+   [-1, 1, BNeck, [64, 2, 6]],
+   [-1, 1, BNeck, [64, 1, 6]],
+   [-1, 1, BNeck, [64, 1, 6]],
+   [-1, 1, BNeck, [64, 1, 6]],
+   [-1, 1, BNeck, [96, 1, 6]],
+   [-1, 1, BNeck, [96, 1, 6]],
+   [-1, 1, BNeck, [96, 1, 6]],                        # 14 - P4
+   [-1, 1, BNeck, [160, 2, 6]],
+   [-1, 1, BNeck, [160, 1, 6]],
+   [-1, 1, BNeck, [160, 1, 6]],
+   [-1, 1, BNeck, [320, 1, 6]],                       # 18 - P5
+  ]
+
+neck:
+  [[-1, 1, EDFA, [96, 20]],
+   [-1, 1, nn.Upsample, [None, 2, "nearest"]],
+   [[-1, 14], 1, Concat, [1]], # cat backbone P4
+   [-1, 1, C3, [96, False]], # 22
+
+   [-1, 1, Conv, [32, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, "nearest"]],
+   [[-1, 7], 1, Concat, [1]], # cat backbone P3
+   [-1, 1, C3, [32, False]], # 26 (P3/8-small)
+
+   [-1, 1, Conv, [32, 3, 2]],
+   [[-1, 23], 1, Concat, [1]], # cat head P4
+   [-1, 1, C3, [64, False]], # 29 (P4/16-medium)
+
+   [-1, 1, Conv, [96, 3, 2]],
+   [[-1, 19], 1, Concat, [1]], # cat head P5
+   [-1, 1, C3, [192, False]], # 32 (P5/32-large)
+  ]
+
+head:
+  [[[26, 29, 32], 1, LSAHEAD, [nc, anchors, size]],   # Detect(P3, P4, P5)
+  ]
